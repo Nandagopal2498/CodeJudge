@@ -20,17 +20,28 @@ export class LeaderboardModel {
         FROM submissions s
         WHERE s.verdict = 'Accepted'
         GROUP BY s.user_id, s.problem_id
+      ),
+      UserStats AS (
+        SELECT 
+          u.id as user_id,
+          u.username,
+          COUNT(fa.problem_id) as problems_solved,
+          COALESCE(SUM(p.points), 0) as total_points,
+          MAX(fa.solved_at) as latest_solve_at
+        FROM users u
+        INNER JOIN FirstAccepted fa ON u.id = fa.user_id
+        INNER JOIN problems p ON fa.problem_id = p.id
+        GROUP BY u.id, u.username
+        HAVING problems_solved > 0
       )
       SELECT 
-        u.id as user_id,
-        u.username,
-        COUNT(fa.problem_id) as problems_solved,
-        COALESCE(SUM(p.points), 0) as total_points
-      FROM users u
-      LEFT JOIN FirstAccepted fa ON u.id = fa.user_id
-      LEFT JOIN problems p ON fa.problem_id = p.id
-      GROUP BY u.id, u.username
-      ORDER BY total_points DESC, problems_solved DESC, u.id ASC
+        user_id,
+        username,
+        problems_solved,
+        total_points,
+        latest_solve_at
+      FROM UserStats
+      ORDER BY total_points DESC, problems_solved DESC, latest_solve_at ASC, user_id ASC
     `;
 
     const rows = db.prepare(query).all() as Array<{
@@ -38,14 +49,25 @@ export class LeaderboardModel {
       username: string;
       problems_solved: number;
       total_points: number;
+      latest_solve_at: string;
     }>;
 
-    return rows.map((row, index) => ({
-      rank: index + 1,
-      userId: row.user_id,
-      username: row.username,
-      problemsSolved: Number(row.problems_solved || 0),
-      totalPoints: Number(row.total_points || 0)
-    }));
+    let currentRank = 1;
+    return rows.map((row, index) => {
+      if (index > 0) {
+        const prev = rows[index - 1];
+        // If points and solve time are different, update rank
+        if (row.total_points !== prev.total_points || row.latest_solve_at !== prev.latest_solve_at) {
+          currentRank = index + 1;
+        }
+      }
+      return {
+        rank: currentRank,
+        userId: row.user_id,
+        username: row.username,
+        problemsSolved: Number(row.problems_solved || 0),
+        totalPoints: Number(row.total_points || 0)
+      };
+    });
   }
 }

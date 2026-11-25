@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.js';
 import { fetchLeaderboardApi } from '../services/leaderboard.service.js';
 import { LeaderboardEntry } from '../types/leaderboard.js';
-import { Trophy, Medal, Award, RefreshCw, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Trophy, Medal, Award, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export function LeaderboardPage() {
   const { user } = useAuth();
@@ -81,7 +81,7 @@ export function LeaderboardPage() {
             Global Leaderboard
           </h1>
           <p className="text-xs text-slate-600 mt-1">
-            Real-time algorithmic standings ranked by total points. Each problem awards points only on the first Accepted solution.
+            Real-time algorithmic standings ranked by total points. Ties broken by earliest solve time. Each problem awards points only on the first Accepted solution.
           </p>
         </div>
       </div>
@@ -106,11 +106,6 @@ export function LeaderboardPage() {
                 <span>{currentUserEntry.totalPoints} Total Points</span>
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-xl border border-white/20 text-xs font-semibold">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span>Global Standings</span>
           </div>
         </div>
       )}

@@ -1,21 +1,20 @@
 export const PROBLEM_TAGS: Record<string, string[]> = {
   "two-sum": [
-    "Array",
-    "Hash Table"
+    "Arrays",
+    "Hashmap"
   ],
   "binary-search": [
     "Binary Search",
-    "Array"
+    "Arrays"
   ],
   "minimum-sum-gcd": [
     "Math",
-    "Number Theory",
-    "Sliding Window"
+    "Number Theory"
   ],
   "longest-subarray-with-sum-k": [
-    "Prefix Sum",
-    "Hash Table",
-    "Array"
+    "Prefix Sums",
+    "Hashmap",
+    "Arrays"
   ],
   "trapping-rain-water": [
     "Two Pointers",

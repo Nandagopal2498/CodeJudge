@@ -179,7 +179,7 @@ export function ProblemsPage() {
               </div>
               <div>
                 <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  Your Solved Target
+                  Your Progress
                 </div>
                 <div className="text-xs font-bold text-slate-800 font-mono">
                   {solvedCount} of {problems.length} Solved ({solvedPercent}%)
